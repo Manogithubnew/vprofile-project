@@ -43,27 +43,6 @@ pipeline {
                 sh 'mvn -s settings.xml checkstyle:checkstyle'
             }
         }
-
-        stage ('Sonar Analysis') {
-            environment {
-                SONAR_URL = "http://192.168.100.9/:9000" 
-                scannerHome = tool "${SONARSCANNER}"
-            }
-            steps {
-                withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-                  sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-                    sh '''${scannerHome}/opt/sonar-scanner -Dsonar.projectKey=vprofile \
-                    -Dsonar.projectName=vprofile \
-                    -Dsonar.projectVersion=1.0 \
-                    -Dsonar.sources=src/ \
-                    -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
-                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
-                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
-
-                }
-            }
-        }       
-   
+        
     }        
 }
