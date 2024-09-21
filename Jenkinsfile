@@ -1,3 +1,8 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good',
+    'FAILURE': 'danger',
+]
+
 pipeline {
     agent any
     tools {
@@ -11,7 +16,7 @@ pipeline {
         NEXUS_PASS = 'admin@123'
         RELEASE_REPO = 'vprofile-release'
         CENTRAL_REPO = 'vpro-maven-central'
-        NEXUS_IP = '192.168.100.9' 
+        NEXUS_IP = '192.168.100.9'
         NEXUS_PORT = '8081'
         NEXUS_GRP_REPO = 'vpro-maven-group'
         NEXUS_LOGIN = 'nexuslogin'
@@ -29,10 +34,11 @@ pipeline {
                     echo 'Archiving'
                     archiveArtifacts artifacts: '**/*.war'
                 }
-            }         
+            }
             
         }
-         stage('Test') {
+
+        stage('Test') {
             steps {
                 sh 'mvn -s settings.xml test'
             }
@@ -43,6 +49,9 @@ pipeline {
                 sh 'mvn -s settings.xml checkstyle:checkstyle'
             }
         }
+
+        
+
         stage ("Upload Artifact") {
             steps {
                 nexusArtifactUploader(
@@ -60,6 +69,15 @@ pipeline {
                      type: 'war']
                   ]
                 )
-         }
-     }        
+            }
+        }
+    }
+    post {
+        always{
+            echo 'Slack Notifications'
+            slackSend channel: '#cicd',
+                color: COLOR_MAP[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+        }
+    }
 }
