@@ -51,7 +51,7 @@ pipeline {
             }
             steps {
                 withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-                    sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
+                    sh '''${scannerHome}/opt/sonar-scanner/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                     -Dsonar.login=$SONAR_AUTH_TOKEN \
                     -Dsonar.host.url=${SONAR_URL}'
                     -Dsonar.projectName=vprofile \
