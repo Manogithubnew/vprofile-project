@@ -11,7 +11,7 @@ pipeline {
         NEXUS_PASS = 'admin@123'
         RELEASE_REPO = 'vprofile-release'
         CENTRAL_REPO = 'vpro-maven-central'
-        NEXUS_IP = '192.168.100.9' 
+        NEXUS_IP = "192.168.100.9'
         NEXUS_PORT = '8081'
         NEXUS_GRP_REPO = 'vpro-maven-group'
         NEXUS_LOGIN = 'nexuslogin'
@@ -21,6 +21,12 @@ pipeline {
         stage('Build'){
             steps {
                 sh 'mvn -s settings.xml -DskipTests install'
+            }
+            post {
+                success {
+                    echo 'Archiving'
+                    archiveArtifacts artifacts: '**/*.war'
+                }
             }
             
         }
