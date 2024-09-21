@@ -49,9 +49,6 @@ pipeline {
                 sh 'mvn -s settings.xml checkstyle:checkstyle'
             }
         }
-
-        
-
         stage ("Upload Artifact") {
             steps {
                 nexusArtifactUploader(
