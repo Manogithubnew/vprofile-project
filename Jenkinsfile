@@ -60,6 +60,6 @@ pipeline {
                      type: 'war']
                   ]
                 )
-            }
+         }
      }        
 }
